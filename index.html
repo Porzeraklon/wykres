@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykres wielomianu trzeciego stopnia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Wykres wielomianu trzeciego stopnia</h1>
+        <form id="polynomialForm" class="form">
+            <label for="a" class="form-label">Współczynnik a:</label>
+            <input type="number" step="any" id="a" class="form-input" required><br>
+            <label for="b" class="form-label">Współczynnik b:</label>
+            <input type="number" step="any" id="b" class="form-input" required><br>
+            <label for="c" class="form-label">Współczynnik c:</label>
+            <input type="number" step="any" id="c" class="form-input" required><br>
+            <label for="d" class="form-label">Współczynnik d:</label>
+            <input type="number" step="any" id="d" class="form-input" required><br>
+            <label for="startX" class="form-label">Początek zakresu X:</label>
+            <input type="range" step="0.5" min="-100" max="100" value="0" id="startX" oninput="updateSliderValue('startX', this.value)" style="width: 90%;">
+            <span id="startXValue" class="slider-value">0</span><br>
+            <label for="endX" class="form-label">Koniec zakresu X:</label>
+            <input type="range" step="0.5" min="-100" max="100" value="0" id="endX" oninput="updateSliderValue('endX', this.value)" style="width: 90%;">
+            <span id="endXValue" class="slider-value">0</span><br>
+        </form>
+
+        <canvas id="polynomialCanvas" width="1000" height="500"></canvas>
+    </div>
+
+    <footer>
+        <p>Wykonał: Damian Beldegrin i Michał Kuryłko</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('polynomialCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+            const d = parseFloat(document.getElementById('d').value);
+            const startX = parseFloat(document.getElementById('startX').value);
+            const endX = parseFloat(document.getElementById('endX').value);
+
+            const xRatio = canvas.width / (endX - startX);
+            const yRatio = canvas.height / (endX - startX);
+
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+
+            for (let x = 0; x < canvas.width; x++) {
+                const xVal = (x / xRatio) + startX;
+                const yVal = a * Math.pow(xVal, 3) + b * Math.pow(xVal, 2) + c * xVal + d;
+                const y = (canvas.height / 2) + (yVal * yRatio);
+                ctx.lineTo(x, y);
+            }
+
+            ctx.strokeStyle = '#FFA500';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function updateSliderValue(sliderId, value) {
+            document.getElementById(sliderId + 'Value').innerText = value;
+            drawChart();
+        }
+
+        drawChart();
+    </script>
+</body>
+</html>
